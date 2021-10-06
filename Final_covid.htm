@@ -1,0 +1,155 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+df = pd.read_csv('F:\\Mtech\\Papers\\zander\\2020_IN_Region_Mobility_Report.csv')
+
+
+# In[2]:
+
+
+# Convert the date column to datetime type
+df.date = pd.to_datetime(df.date, format='%d-%m-%Y')
+
+
+# In[3]:
+
+
+df.sample(100)
+
+
+# In[27]:
+
+
+covid_df = pd.read_csv('F:\casess.csv')
+covid_df.sample(100)
+
+
+# In[23]:
+
+
+# Convert the date column to datetime type 
+covid_df.date = pd.to_datetime(covid_df.date, format='%d-%m-%Y')
+
+
+# In[24]:
+
+
+final_df = df.groupby(['state', 'date']).mean().reset_index()
+
+
+# In[25]:
+
+
+final_df.head()
+
+
+# In[26]:
+
+
+final_df = final_df.merge(covid_df, how="inner", on=['state', 'date'])
+
+
+# In[20]:
+
+
+final_df.tail()
+
+
+# In[10]:
+
+
+final_df.to_pickle('app.data')
+
+
+# In[11]:
+
+
+import plotly.express as px
+state_df = final_df.loc[final_df.state=="Delhi"].copy()
+fig = px.line(state_df, x='date', y='cases')
+fig.show()
+
+
+# In[42]:
+
+
+fig = px.line(state_df, x='date', y='retail', labels = {'retail'})
+fig.show()
+
+
+# In[13]:
+
+
+fig = px.line(state_df, x='date', y='grocery')
+fig.show()
+
+
+# In[14]:
+
+
+fig = px.line(state_df, x='date', y='parks')
+fig.show()
+
+
+# In[15]:
+
+
+fig = px.line(state_df, x='date', y='transit')
+fig.show()
+
+
+# In[16]:
+
+
+fig = px.line(state_df, x='date', y='workplaces')
+fig.show()
+
+
+# In[17]:
+
+
+fig = px.line(state_df, x='date', y='residential')
+fig.show()
+
+
+# In[14]:
+
+
+fig = px.scatter(state_df, x="date", y=["retail", "grocery", "parks", "transit", "workplaces", "residential"])
+fig.show()
+
+
+# In[15]:
+
+
+state_df.corr()
+
+
+# In[16]:
+
+
+state_df['new_cases'] = final_df['cases'].diff()
+state_df['new_deaths'] = final_df['deaths'].diff()
+
+
+# In[17]:
+
+
+state_df.corr()
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
